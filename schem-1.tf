@@ -8,6 +8,7 @@ variable domain_password {}
 variable dc_hostname {}
 variable cn_hostname {}
 variable computenode_count {}
+variable domain_script_url {}
 
 provider "ibmcloud" {
   softlayer_username = "${var.softlayer_username}"
@@ -31,7 +32,7 @@ resource "ibmcloud_infra_virtual_guest" "domaincontroller" {
   private_network_only = true,
   hourly_billing = true,
   tags = ["schematics","domaincontroller"]
-  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\ninvoke-webrequest https://raw.githubusercontent.com/mcltn/schem-domain-ex/master/create-domain-controller.ps1 -outfile c:\\installs\\create-domain-controller.ps1\nc:\\installs\\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1\n</powershell>"
+  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\ninvoke-webrequest '${var.domain_script_url}' -outfile 'c:\\installs\\create-domain-controller.ps1'\nc:\\installs\\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1\n</powershell>"
 }
 
 resource "ibmcloud_infra_virtual_guest" "computenodes" {

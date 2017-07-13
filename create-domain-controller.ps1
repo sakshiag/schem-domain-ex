@@ -65,7 +65,7 @@ else
 
 	}
 	
-	schtasks.exe /delete /tn ConfigureDC /f
+	schtasks.exe /delete /tn "ConfigureDC" /f
 
 	Start-Sleep 2
 
