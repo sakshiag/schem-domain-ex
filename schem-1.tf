@@ -48,5 +48,5 @@ resource "ibmcloud_infra_virtual_guest" "computenodes" {
   private_network_only = true,
   hourly_billing = true,
   tags = ["schematics","compute"]
-  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\n\n</powershell>"
+  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\nNew-Item c:\\installs -type directory\ninvoke-webrequest '${var.domain_join_url}' -outfile 'c:\\installs\\add-to-domain.ps1'\nc:\\installs\\add-to-domain.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -dns_server ${ibmcloud_infra_virtual_guest.domaincontroller.ipv4_address_private}\n</powershell>"
 }

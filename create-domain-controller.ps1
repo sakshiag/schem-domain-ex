@@ -46,7 +46,7 @@ if ($step -eq "1")
 
 	Start-Sleep 5
 
-	schtasks.exe /create /f /tn ConfigureDC /ru SYSTEM /sc ONSTART /tr "C:\scripts\create-domain-controller.ps1 -domain $domain -username $username -password $password -step 2"
+	schtasks.exe /create /f /tn ConfigureDC /ru SYSTEM /sc ONSTART /tr "C:\installs\create-domain-controller.ps1 -domain $domain -username $username -password $password -step 2"
 
 	Start-Sleep 2
 	
@@ -60,6 +60,8 @@ else
 
 		$oupath = "OU=compute,DC=" + $a + ",DC=" + $b
 		New-ADUser -SamAccountName $username -Name "Compute User" -UserPrincipalName $username -AccountPassword $secure_string_pwd -Enabled $true -PasswordNeverExpires $true -Path $oupath
+
+		Add-ADGroupMember -Identity 'Domain Admins' -Members 'ComputeUser'
 	}
 	catch {
 
