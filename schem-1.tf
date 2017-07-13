@@ -19,7 +19,7 @@ data "ibmcloud_infra_image_template" "base_template" {
 }
 
 resource "ibmcloud_infra_virtual_guest" "domaincontroller" {
-  count = "${var.domaincontroller_count}"
+  count = "1"
   hostname = "${var.dc_hostname}"
   domain = "${var.domain}"
   image_id = "${data.ibmcloud_infra_image_template.base_template.id}"
