@@ -49,5 +49,5 @@ resource "ibmcloud_infra_virtual_guest" "computenodes" {
   private_network_only = true,
   hourly_billing = true,
   tags = ["schematics","compute"]
-  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\nNew-Item c:\\installs -type directory\ninvoke-webrequest '${var.domain_join_url}' -outfile 'c:\\installs\\add-to-domain.ps1'\nc:\\installs\\add-to-domain.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -dns_server ${ibmcloud_infra_virtual_guest.domaincontroller.ipv4_address_private}\n</powershell>"
+  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\n$secure_string_pwd = ConvertTo-SecureString ${var.domain_password} -AsPlainText -Force\n$cred = New-Object System.Management.Automation.PSCredential (${var.domain_username}, $secure_string_pwd)\n$private_nic = Get-NetAdapter -Name 'Ethernet 2'\n$private_nic | Set-DnsClientServerAddress -ServerAddresses (${ibmcloud_infra_virtual_guest.domaincontroller.ipv4_address_private})\nSleep -Seconds 5\nAdd-Computer -DomainName ${var.domain} -Credential $cred\nSleep -Seconds 5\nRestart-Computer\n</powershell>"
 }
