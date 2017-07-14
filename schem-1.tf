@@ -1,6 +1,7 @@
 variable softlayer_username {}
 variable softlayer_api_key {}
 variable base_template_image {}
+variable compute_node_image {}
 variable datacenter {}
 variable domain {}
 variable domain_username {}
@@ -17,6 +18,9 @@ provider "ibmcloud" {
 
 data "ibmcloud_infra_image_template" "base_template" {
   name = "${var.base_template_image}"
+}
+data "ibmcloud_infra_image_template" "compute_template" {
+  name = "${var.compute_node_image}"
 }
 
 resource "ibmcloud_infra_virtual_guest" "domaincontroller" {
@@ -39,7 +43,7 @@ resource "ibmcloud_infra_virtual_guest" "computenodes" {
   count = "${var.computenode_count}"
   hostname = "${var.cn_hostname}${count.index}"
   domain = "${var.domain}"
-  image_id = "${data.ibmcloud_infra_image_template.base_template.id}"
+  image_id = "${data.ibmcloud_infra_image_template.compute_template.id}"
   datacenter = "${var.datacenter}"
   cores = 2
   memory = 2048
@@ -48,5 +52,5 @@ resource "ibmcloud_infra_virtual_guest" "computenodes" {
   private_network_only = true,
   hourly_billing = true,
   tags = ["schematics","compute"]
-  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\n$secure_string_pwd = ConvertTo-SecureString ${var.domain_password} -AsPlainText -Force\n$cred = New-Object System.Management.Automation.PSCredential (${var.domain_username}, $secure_string_pwd)\n$private_nic = Get-NetAdapter -Name 'Ethernet 2'\n$private_nic | Set-DnsClientServerAddress -ServerAddresses (${ibmcloud_infra_virtual_guest.domaincontroller.ipv4_address_private})\nSleep -Seconds 5\nAdd-Computer -DomainName ${var.domain} -Credential $cred\nSleep -Seconds 5\nRestart-Computer\n</powershell>"
+  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\nNew-Item c:\\installs -type directory\n$ErrorActionPreference='SilentlyContinue'\nStop-Transcript | out-null\n$ErrorActionPreference = 'Continue'\nStart-Transcript -path C:\installs\output.txt -append\n$secure_string_pwd = ConvertTo-SecureString ${var.domain_password} -AsPlainText -Force\n$cred = New-Object System.Management.Automation.PSCredential (${var.domain_username}, $secure_string_pwd)\n$private_nic = Get-NetAdapter -Name 'Ethernet 2'\n$private_nic | Set-DnsClientServerAddress -ServerAddresses (${ibmcloud_infra_virtual_guest.domaincontroller.ipv4_address_private})\nSleep -Seconds 5\nAdd-Computer -DomainName ${var.domain} -Credential $cred\nSleep -Seconds 5\nStop-Transcript\nRestart-Computer\n</powershell>"
 }
