@@ -9,7 +9,6 @@ variable dc_hostname {}
 variable cn_hostname {}
 variable computenode_count {}
 variable domain_script_url {}
-variable domain_join_url {}
 
 provider "ibmcloud" {
   softlayer_username = "${var.softlayer_username}"
