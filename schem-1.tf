@@ -8,8 +8,8 @@ variable domain_username {}
 variable domain_password {}
 variable dc_hostname {}
 variable cn_hostname {}
+variable domaincontroller_count {}
 variable computenode_count {}
-variable domain_script_url {}
 
 provider "ibm" {
   softlayer_username = "${var.softlayer_username}"
@@ -20,11 +20,11 @@ data "ibm_compute_image_template" "base_template" {
   name = "${var.base_template_image}"
 }
 data "ibm_compute_image_template" "compute_template" {
-  name = "${var.compute_node_image}"
+  name = "${var.computenode_template_image}"
 }
 
 resource "ibm_compute_vm_instance" "domaincontroller" {
-  count = "1"
+  count = "${var.domaincontroller_count}"
   hostname = "${var.dc_hostname}"
   domain = "${var.domain}"
   image_id = "${data.ibm_compute_image_template.base_template.id}"
