@@ -1,7 +1,7 @@
 variable softlayer_username {}
 variable softlayer_api_key {}
 variable base_template_image {}
-variable compute_node_image {}
+variable computenode_template_image {}
 variable datacenter {}
 variable domain {}
 variable domain_username {}
