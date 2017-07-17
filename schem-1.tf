@@ -11,7 +11,7 @@ variable cn_hostname {}
 variable computenode_count {}
 variable domain_script_url {}
 
-provider "ibmcloud" {
+provider "ibm" {
   softlayer_username = "${var.softlayer_username}"
   softlayer_api_key = "${var.softlayer_api_key}"
 }
