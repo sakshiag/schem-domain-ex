@@ -34,7 +34,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
   memory = 4096
   network_speed = 1000
   local_disk = false
-  private_network_only = true,
+  private_network_only = false,
   hourly_billing = true,
   tags = ["schematics","domaincontroller"]
   user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\nNew-Item c:\\installs -type directory\ninvoke-webrequest '${var.domaincontroller_script_url}' -outfile 'c:\\installs\\create-domain-controller.ps1'\nc:\\installs\\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1\n</powershell>"
