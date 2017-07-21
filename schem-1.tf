@@ -11,6 +11,7 @@ variable cn_hostname {}
 variable domaincontroller_count {}
 variable computenode_count {}
 variable domaincontroller_script_url {}
+variable status_controller_url {}
 
 provider "ibm" {
   softlayer_username = "${var.softlayer_username}"
@@ -36,8 +37,16 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
   local_disk = false
   private_network_only = true,
   hourly_billing = true,
-  tags = ["schematics","domaincontroller"]
-  user_metadata = "#ps1_sysnative\nscript: |\n<powershell>\nNew-Item c:\\installs -type directory\ninvoke-webrequest '${var.domaincontroller_script_url}' -outfile 'c:\\installs\\create-domain-controller.ps1'\nc:\\installs\\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1\n</powershell>"
+  tags = ["schematics","domaincontroller","${terraform.env}"]
+  user_metadata = <<EOF
+    #ps1_sysnative
+    script: |
+    <powershell>
+    New-Item c:\installs -type directory
+    invoke-webrequest '${var.domaincontroller_script_url}' -outfile 'c:\installs\create-domain-controller.ps1'
+    c:\installs\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1 -statusurl ${var.status_controller_url}
+    </powershell>
+    EOF
 }
 
 resource "ibm_compute_vm_instance" "computenodes" {
@@ -69,6 +78,8 @@ resource "ibm_compute_vm_instance" "computenodes" {
     Sleep -Seconds 5
     Add-Computer -DomainName "${var.domain}" -Credential $cred
     Sleep -Seconds 5
+    $statusurl = status_controller_url + "/pending"
+    Invoke-WebRequest $statusurl
     Stop-Transcript
     Restart-Computer
     </powershell>
