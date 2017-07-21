@@ -11,7 +11,6 @@ variable cn_hostname {}
 variable domaincontroller_count {}
 variable computenode_count {}
 variable domaincontroller_script_url {}
-variable status_controller_url {}
 
 provider "ibm" {
   softlayer_username = "${var.softlayer_username}"
