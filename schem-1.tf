@@ -37,7 +37,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
   local_disk = false
   private_network_only = true,
   hourly_billing = true,
-  tags = ["schematics","domaincontroller","${terraform.env}","${env.Name}"]
+  tags = ["schematics","domaincontroller"]
   user_metadata = <<EOF
     #ps1_sysnative
     script: |
@@ -78,8 +78,6 @@ resource "ibm_compute_vm_instance" "computenodes" {
     Sleep -Seconds 5
     Add-Computer -DomainName "${var.domain}" -Credential $cred
     Sleep -Seconds 5
-    $statusurl = status_controller_url + "/pending"
-    Invoke-WebRequest $statusurl
     Stop-Transcript
     Restart-Computer
     </powershell>
