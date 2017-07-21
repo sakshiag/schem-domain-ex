@@ -43,7 +43,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
     <powershell>
     New-Item c:\installs -type directory
     invoke-webrequest '${var.domaincontroller_script_url}' -outfile 'c:\installs\create-domain-controller.ps1'
-    c:\installs\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1 -statusurl ${var.status_controller_url}
+    c:\installs\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1
     </powershell>
     EOF
 }
