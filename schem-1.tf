@@ -35,7 +35,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
   memory = 4096
   network_speed = 1000
   local_disk = false
-  private_network_only = true,
+  private_network_only = false,
   hourly_billing = true,
   tags = ["schematics","domaincontroller"]
   user_metadata = <<EOF
