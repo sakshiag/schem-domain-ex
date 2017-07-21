@@ -37,7 +37,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
   local_disk = false
   private_network_only = true,
   hourly_billing = true,
-  tags = ["schematics","domaincontroller","${terraform.env}"]
+  tags = ["schematics","domaincontroller","${terraform.env}","${env.Name}"]
   user_metadata = <<EOF
     #ps1_sysnative
     script: |
