@@ -68,10 +68,7 @@ else
 		$oupath = "OU=compute,DC=" + $a + ",DC=" + $b
 		New-ADUser -SamAccountName $username -Name "Compute User" -UserPrincipalName $username -AccountPassword $secure_string_pwd -Enabled $true -PasswordNeverExpires $true -Path $oupath
 
-		Add-ADGroupMember -Identity 'Domain Admins' -Members 'ComputeUser'
-
-		$statusurl = $statusurl + "/pending"
-		Invoke-WebRequest $statusurl
+		Add-ADGroupMember -Identity 'Domain Admins' -Members $username
 	}
 	catch {
 	}
