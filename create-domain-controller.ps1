@@ -7,7 +7,6 @@ param (
 	[string]$username,
 	[string]$password,
 	[string]$step
-	[string]$statusurl
 )
 
 $ErrorActionPreference="SilentlyContinue"
