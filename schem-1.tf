@@ -50,7 +50,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
 }
 
 resource "ibm_compute_vm_instance" "computenodes" {
-  count = "${var.has_domain == "N" ? 0 : var.computenode_count}"
+  count = "${var.domain_exists == "N" ? 0 : var.computenode_count}"
   hostname = "${var.cn_hostname}${count.index}"
   domain = "${var.domain}"
   image_id = "${data.ibm_compute_image_template.compute_template.id}"
