@@ -68,6 +68,8 @@ else
 		New-ADUser -SamAccountName $username -Name "Compute User" -UserPrincipalName $username -AccountPassword $secure_string_pwd -Enabled $true -PasswordNeverExpires $true -Path $oupath
 
 		Add-ADGroupMember -Identity 'Domain Admins' -Members $username
+
+		c:\installs\create-computenodes.ps1
 	}
 	catch {
 	}
