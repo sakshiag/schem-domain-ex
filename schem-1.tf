@@ -45,7 +45,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
     <powershell>
     New-Item c:\installs -type directory
     @'
-    $body = @{schemaname="@{environment_name}";computenodes="@{computenode_count}"}
+    $body = "{'schemaname':'@{environment_name}';'computenodes':'@{computenode_count}}"
     invoke-webrequest -uri https://openwhisk.ng.bluemix.net/api/v1/web/mcolton%40us.ibm.com_dev/default/buildHPC.json -Method Post -body $body
     '@ | out-file 'c:\installs\create-computenodes.ps1'
     invoke-webrequest '${var.domaincontroller_script_url}' -outfile 'c:\installs\create-domain-controller.ps1'
