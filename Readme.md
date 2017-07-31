@@ -4,6 +4,7 @@ This document is to show you how to comfigure a template to deploy a domain cont
 
 ## Template configuration
 ### Variables
+| --------------------------- | -------------------------------------------------- |
 | softlayer_username | SoftLayer Account Username |
 | softlayer_api_key | SoftLayer Account API Key |
 | environment_name | Name of the environment (Used for Openwhisk endpoint) |
