@@ -3,7 +3,8 @@
 This document is to show you how to comfigure a template to deploy a domain controller and then follow up provisioning compute nodes which will then join the domain. A user will be created during the process for use.
 
 ## Template configuration
-### Variables
+
+| *Parameters* | Description / Usage |
 | --------------------------- | -------------------------------------------------- |
 | softlayer_username | SoftLayer Account Username |
 | softlayer_api_key | SoftLayer Account API Key |
