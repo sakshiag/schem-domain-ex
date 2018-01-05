@@ -1,7 +1,5 @@
 variable softlayer_username {}
 variable softlayer_api_key {}
-variable base_template_image {}
-variable computenode_template_image {}
 variable datacenter {}
 variable domain {}
 variable domain_username {}
@@ -19,18 +17,11 @@ provider "ibm" {
   softlayer_api_key = "${var.softlayer_api_key}"
 }
 
-data "ibm_compute_image_template" "base_template" {
-  name = "${var.base_template_image}"
-}
-data "ibm_compute_image_template" "compute_template" {
-  name = "${var.computenode_template_image}"
-}
-
 resource "ibm_compute_vm_instance" "domaincontroller" {
   count = "${var.domaincontroller_count}"
   hostname = "${var.dc_hostname}"
   domain = "${var.domain}"
-  image_id = "${data.ibm_compute_image_template.base_template.id}"
+  os_reference_code = "WIN_2012-STD_64"  
   datacenter = "${var.datacenter}"
   cores = 4
   memory = 4096
@@ -45,7 +36,7 @@ resource "ibm_compute_vm_instance" "domaincontroller" {
     <powershell>
     New-Item c:\installs -type directory
     invoke-webrequest '${var.domaincontroller_script_url}' -outfile 'c:\installs\create-domain-controller.ps1'
-    "invoke-webrequest -uri https://openwhisk.ng.bluemix.net/api/v1/web/mcolton@us.ibm.com_dev/default/buildHPC.json -Method Post -body @{schemaname='${var.environment_name}';computenodes='${var.computenode_count}'}" | out-file c:\installs\create-computenodes.ps1
+    "invoke-webrequest -UseBasicParsing -uri https://openwhisk.ng.bluemix.net/api/v1/web/sakshiag@in.ibm.com_dev/default/buildHPC.json -Method Post -body @{schemaname='${var.environment_name}';computenodes='${var.computenode_count}'}" | out-file c:\installs\create-computenodes.ps1
     c:\installs\create-domain-controller.ps1 -domain ${var.domain} -username ${var.domain_username} -password ${var.domain_password} -step 1
     </powershell>
     EOF
@@ -55,7 +46,7 @@ resource "ibm_compute_vm_instance" "computenodes" {
   count = "${var.domain_exists == "N" ? 0 : var.computenode_count}"
   hostname = "${var.cn_hostname}${count.index}"
   domain = "${var.domain}"
-  image_id = "${data.ibm_compute_image_template.compute_template.id}"
+  os_reference_code = "WIN_2012-STD_64"  
   datacenter = "${var.datacenter}"
   cores = 2
   memory = 2048
@@ -69,7 +60,6 @@ resource "ibm_compute_vm_instance" "computenodes" {
     script: |
     <powershell>
     New-Item c:\installs -type directory
-    $ErrorActionPreference="SilentlyContinue"
     Stop-Transcript | out-null
     $ErrorActionPreference = "Continue"
     Start-Transcript -path C:\installs\output.txt -append

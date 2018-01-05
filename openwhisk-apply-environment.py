@@ -12,21 +12,22 @@
 import sys, requests, urllib, simplejson
 
 def main(args):
-    name = args.get("schemaname", "schem-default")
+    name = args.get("schemaname", "testadsakshi")
     computenodes = args.get("computenodes", "0")
     refresh_token = args.get("refreshtoken","")
+    api_key = args.get("apikey","")
     
     # Variables
     schematics_base_url = 'https://us-south.schematics.bluemix.net/v1/environments'
     
     # Get Auth Token
     auth_url = 'https://iam.bluemix.net/oidc/token'
-    headers = {'authorization':'Basic Yng6Yng=', 'Content-Type': 'application/x-www-form-urlencoded','Accept':'application/json'}
-    params = urllib.parse.urlencode({'grant_type':'refresh_token','response_type':'cloud_iam','refresh_token':refresh_token})
+    headers = {'Content-Type': 'application/x-www-form-urlencoded','Accept':'application/json'}
+    params = urllib.parse.urlencode({'grant_type':'urn:ibm:params:oauth:grant-type:apikey','response_type':'cloud_iam','apikey':api_key})
     r = requests.post(auth_url, params=params, headers=headers)
     a = r.json()
     iam_token = a['access_token']
-    
+   
     # Get Environments
     schem_url = schematics_base_url
     headers = {'authorization':iam_token}
